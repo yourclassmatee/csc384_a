@@ -7,7 +7,7 @@ Construct and return Kenken CSP model.
 from cspbase import *
 import itertools
 
-def kenken_csp_model(kenken_grid):
+def kenken_csp_model(course_list):
     '''Returns a CSP object representing a Kenken CSP problem along 
        with an array of variables for the problem. That is return
 
@@ -52,64 +52,32 @@ def kenken_csp_model(kenken_grid):
     '''
 
     ##IMPLEMENT
-    
-    #generate dom
-    size = kenken_grid[0][0]
-    dom = []
-    i=0
-    for i in range(1, size+1):
-        dom.append(i)
 
+    course_num = course_list[0][0]
     # generate vars
     vars = []
-    for i in range(1, size+1):
-        each_row = []
-        for j in range(1, size+1):
-            each_row.append(Variable('V{}{}'.format(i,j), dom))
-        vars.append(each_row)
-
-    cons = []
-    #add kenken constraints
-    for i in range(1, len(kenken_grid)):
-        each_cage = kenken_grid[i]
-
-        #generate list of lists for looping
-        scope = []
-        varDoms = []
-        for j in range (0, len(each_cage)-2):
-            each_dom = []
-            for k in range(1, size+1):
-                each_dom.append(k)
-            varDoms.append(each_dom)
-            index1 = int(str(each_cage[j])[0])
-            index2 = int(str(each_cage[j])[1])
-            scope.append(vars[index1-1][index2-1])
-
-        sat_tuples = []
-        #iterate the cartesian product
-        for t in itertools.product(*varDoms):
-            if len(each_cage) > 2:
-                if check_kenken(t, each_cage[len(each_cage)-2], each_cage[len(each_cage)-1]):
-                    sat_tuples.append(t)
-            else:
-                if check_kenken_2(t, each_cage[len(each_cage)-1]):
-                    sat_tuples.append(t)
-
-        #make con
-        con = Constraint("C:cage{})".format(i), scope)
-        con.add_satisfying_tuples(sat_tuples)
-        cons.append(con)
+    for i in range(1, course_num+1):
+        vars.append(Variable('V{}'.format(i), course_list[i]))
+    #list of timeslots e.g.["M10","Tu10","W16"]
+    no_go = course_list[course_num+1]
 
 
-    #make all binary constraints
-    for i in range(0, len(vars)):
-        row = vars[i]
-        for j in range(len(row)):
-            curr_var = row[j]
-            row_cons = make_row_cons(vars, curr_var, i, j)
-            col_cons = make_col_cons(vars, curr_var, i, j)
-            cons.extend(row_cons)
-            cons.extend(col_cons)
+    # for i in range(1, size+1):
+    #     each_row = []
+    #     for j in range(1, size+1):
+    #         each_row.append(Variable('V{}{}'.format(i,j), dom))
+    #     vars.append(each_row)
+
+    # #generate dom
+    # size = kenken_grid[0][0]
+    # dom = []
+    # i=0
+    # for i in range(1, size+1):
+    #     dom.append(i)
+    #
+
+
+
 
     kenken_csp = CSP("kenkencsp:size{}".format(size))
 
