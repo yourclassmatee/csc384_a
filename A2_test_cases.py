@@ -14,9 +14,9 @@ testcase = [
     [[5],["M8M9M10","Tu13Tu14Tu15"],["Tu9Tu10","Th11Th12","F9F10"],["F14F15F16"],["M10","Tu13","W11","W14"],["Th12Th13Th14","F8F9F10"],["Tu11","Tu13","W11","F8"]]
 ]
 
-def print_kenken_soln(var_array):
-    for row in var_array:
-        print([var.get_assigned_value() for var in row])
+def print_course_soln(var_array):
+    for var in var_array:
+        print(var.get_assigned_value())
 
 if __name__ == "__main__":
     
@@ -31,5 +31,5 @@ if __name__ == "__main__":
             # print("GAC")
             # solver.bt_search(prop_GAC)
             print("Solution")
-            print_kenken_soln(var_array)
+            print_course_soln(var_array)
 
