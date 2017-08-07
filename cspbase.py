@@ -238,7 +238,12 @@ class Constraint:
 
             #now put t in as a support for all of the variable values in it
             for i, val in enumerate(t):
-                var = self.scope[i]
+                var = None
+                # if one var has multiple supports
+                if len(self.scope) == 1 :
+                    var = self.scope[0]
+                else:
+                    var = self.scope[i]
                 if not (var,val) in self.sup_tuples:
                     self.sup_tuples[(var,val)] = []
                 self.sup_tuples[(var,val)].append(t)

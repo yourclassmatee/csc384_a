@@ -15,17 +15,17 @@ def kenken_csp_model(course_list):
     # generate vars
     vars = []
     for i in range(1, course_num+1):
-        domain_list = course_list[i]
-        invalid_domain = []
-        for item in domain_list:
-            for nogo_time in no_go:
-                if nogo_time in item:
-                    invalid_domain.append(item)
-        for item in invalid_domain:
-            domain_list.remove(item)
-
-        vars.append(Variable('V{}'.format(i), domain_list))
-        #vars.append(Variable('V{}'.format(i), course_list[i]))
+        # domain_list = course_list[i]
+        # invalid_domain = []
+        # for item in domain_list:
+        #     for nogo_time in no_go:
+        #         if nogo_time in item:
+        #             invalid_domain.append(item)
+        # for item in invalid_domain:
+        #     domain_list.remove(item)
+        #
+        # vars.append(Variable('V{}'.format(i), domain_list))
+        vars.append(Variable('V{}'.format(i), course_list[i]))
 
     cons = []
 
@@ -40,23 +40,23 @@ def kenken_csp_model(course_list):
             cons.append(con)
 
 
-    # #add constraints for nogo times
-    # for i in range(0, len(vars)):
-    #     sat_tuples = []
-    #     sat_list = []
-    #     for nogo_time in no_go:
-    #         for session in vars[i].domain():
-    #             if nogo_time not in session and session not in sat_tuples:
-    #                 sat_tuples.append(session)
-    #             if nogo_time in session and session in sat_tuples:
-    #                 sat_tuples.remove(session)
-    #     #sat_t = tuple(sat_list)
-    #     #sat_tuples.append(sat_t)
-    #     # for item in sat_list:
-    #     #     sat_tuples.append(tuple(item))
-    #     con = Constraint("C(V{},nogo)".format(i + 1), [vars[i]])
-    #     con.add_satisfying_tuples(sat_tuples)
-    #     cons.append(con)
+    #add constraints for nogo times
+    for i in range(0, len(vars)):
+        sat_tuples = []
+
+        for session in vars[i].domain():
+            session_ok = True
+            for nogo_time in no_go:
+                if nogo_time in session:
+                    session_ok = False
+                    break
+            if session_ok == True:
+                sat_tuples.append((session,))
+
+
+        con = Constraint("C(CS{},nogo)".format(i + 1,), [vars[i]])
+        con.add_satisfying_tuples(sat_tuples)
+        cons.append(con)
 
     #make csp
     course_csp = CSP("course_csp")
