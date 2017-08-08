@@ -147,7 +147,14 @@ def check_vars(d0, d1):
     sat_tuples = []
 
     for t in itertools.product(d0, d1):
-        if (t[1] not in t[0]) and (t[0] not in t[1]):
+        #if (t[1] not in t[0]) and (t[0] not in t[1]):
+            #sat_tuples.append(t)
+        invalid = False
+        time_list = t[0].strip().split(",")
+        for time_slot in time_list:
+            if time_slot in t[1]:
+                invalid = True
+        if not invalid:
             sat_tuples.append(t)
 
     return sat_tuples
